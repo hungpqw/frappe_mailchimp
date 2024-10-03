@@ -8,28 +8,43 @@ from frappe.utils import get_datetime_str
 from mailchimp_transactional.api_client import ApiClientError
 from six import string_types
 
+#whitelist this function
 @frappe.whitelist(allow_guest=True)
-def send_email_with_template(recipients, subject=None, message=None, from_email=None, template=None, variables=None, **kwargs):
-    """
-    Hàm gửi email thay thế cho Frappe. Sử dụng Mailchimp Transactional API (Mandrill)
-    """
+def send_email_with_template(recipients, from_email: str, template: str, variables, subject: str = None,
+                             bcc_address: str = None, raise_exc=False) -> dict:
+  """
+  Send a transactional email to a list of recipients using a template defined in Mailchimp (Mandrill)
+  :param recipients: List of emails to send to.
+  [{
+    "email":"abc@example.com"
+  }]
+  :param subject: The subject of the email (Optional since the subject can be set to a default)
+  :param from_email: The sender of the email
+  :param template: The name (slug) of the template as in Mandrill
+  :param variables: The dynamic content in the template as a list of dict
+   [{
+    "name":"variable_name",
+    "content":"variable_value"
+   }]
+  :param bcc_address: BCC Address
+  :param raise_exc: Whether to raise exception or not when sending the email
+  :return: The response from the Mailchimp Transactional API
+  """
+  if isinstance(recipients, string_types):
+    recipients = json.loads(recipients)
+  if isinstance(variables, string_types):
+    variables = json.loads(variables)
+  if not raise_exc:
+    # Fail silently
     try:
-        # Nếu không có template, sử dụng nội dung email thông thường
-        if not template:
-            if not message:
-                #frappe.throw("Template hoặc message cần được cung cấp.")
-                message = "This is default test"
-            variables = [{"name": "body_content", "content": message}]
-            template = "default_template"  # Thay bằng template mặc định của bạn
-
-        # Gửi email thông qua API Mailchimp
-        return _send_message(recipients, subject, from_email, template, variables)
-    
+      return _send_message(recipients, subject, from_email, template, variables)
+    except ApiClientError as error:
+      frappe.log_error(frappe.get_traceback(), "Mailchimp: API Error")
     except Exception as e:
-        # Ghi log lỗi
-        frappe.log_error(frappe.get_traceback(), "Error in send_email_with_template")
-        raise e  # Để kiểm tra nguyên nhân chính xác
-
+      frappe.log_error(frappe.get_traceback(), "Mailchimp: Error")
+  else:
+    # Raise exceptions
+    return _send_message(recipients, subject, from_email, template, variables, bcc_address)
 
 
 def _send_message(recipients: list, subject: str, from_email: str, template: str, variables: list,
