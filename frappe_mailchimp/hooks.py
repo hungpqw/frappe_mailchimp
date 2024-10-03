@@ -11,6 +11,12 @@ app_color = "grey"
 app_email = "admin@leam.ae"
 app_license = "MIT"
 
+override_whitelisted_methods = {
+    "frappe.core.doctype.communication.email.make": "frappe_mailchimp.utils.transactional_email.send_email_with_template",
+    "frappe.core.doctype.communication.email.queue": "frappe_mailchimp.utils.transactional_email.send_email_with_template",
+    "frappe.email.queue.flush": "frappe_mailchimp.utils.transactional_email.send_email_with_template"
+}
+
 # Includes in <head>
 # ------------------
 
@@ -43,7 +49,7 @@ app_license = "MIT"
 # }
 
 # Website user home page (by function)
-# get_website_user_home_page = "frappe_mailchimp.utils.get_home_page"
+# get_website_user_home_page = "frappe_mailchimp.utils.transactional_email.get_home_page"
 
 # Generators
 # ----------
