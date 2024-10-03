@@ -8,7 +8,7 @@ from frappe.utils import get_datetime_str
 from mailchimp_transactional.api_client import ApiClientError
 from six import string_types
 
-
+@frappe.whitelist(allow_guest=True)
 def send_email_with_template(recipients, from_email: str, template: str, variables, subject: str = None,
                              bcc_address: str = None, raise_exc=False) -> dict:
   """
