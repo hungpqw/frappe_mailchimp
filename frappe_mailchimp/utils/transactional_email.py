@@ -10,7 +10,7 @@ from six import string_types
 
 #whitelist this function
 @frappe.whitelist(allow_guest=True)
-def send_email_with_template(recipients, from_email: str, template: str, variables, subject: str = None,
+def send_email_with_template(recipients, from_email: str = None, template: str, variables, subject: str = None,
                              bcc_address: str = None, raise_exc=False) -> dict:
   """
   Send a transactional email to a list of recipients using a template defined in Mailchimp (Mandrill)
