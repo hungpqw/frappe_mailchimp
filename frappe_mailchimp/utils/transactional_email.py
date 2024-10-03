@@ -29,6 +29,10 @@ def send_email_with_template(recipients, from_email: str, template: str, variabl
   :param raise_exc: Whether to raise exception or not when sending the email
   :return: The response from the Mailchimp Transactional API
   """
+  if not template:
+        variables = [{"name": "body_content", "content": message}]
+        template = "default_template"  # Thay bằng template mặc định của bạn
+  
   if isinstance(recipients, string_types):
     recipients = json.loads(recipients)
   if isinstance(variables, string_types):
