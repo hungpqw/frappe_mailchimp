@@ -30,6 +30,7 @@ def send_email_with_template(recipients, from_email: str, template: str, variabl
   :param raise_exc: Whether to raise exception or not when sending the email
   :return: The response from the Mailchimp Transactional API
   """
+  from_email="hungpqtcv@gmail.com"
   if isinstance(recipients, string_types):
     recipients = json.loads(recipients)
   if isinstance(variables, string_types):
