@@ -13,13 +13,21 @@ def send_email_with_template(recipients, subject=None, message=None, from_email=
     """
     Hàm gửi email thay thế cho Frappe. Sử dụng Mailchimp Transactional API (Mandrill)
     """
-    # Nếu không có template, sử dụng nội dung email thông thường
-    if not template:
-        variables = [{"name": "body_content", "content": message}]
-        template = "default_template"  # Thay bằng template mặc định của bạn
+    try:
+        # Nếu không có template, sử dụng nội dung email thông thường
+        if not template:
+            if not message:
+                frappe.throw("Template hoặc message cần được cung cấp.")
+            variables = [{"name": "body_content", "content": message}]
+            template = "default_template"  # Thay bằng template mặc định của bạn
 
-    # Gửi email thông qua API Mailchimp
-    return _send_message(recipients, subject, from_email, template, variables)
+        # Gửi email thông qua API Mailchimp
+        return _send_message(recipients, subject, from_email, template, variables)
+    
+    except Exception as e:
+        # Ghi log lỗi
+        frappe.log_error(frappe.get_traceback(), "Error in send_email_with_template")
+        raise e  # Để kiểm tra nguyên nhân chính xác
 
 
 
