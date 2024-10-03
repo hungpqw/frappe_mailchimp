@@ -17,7 +17,8 @@ def send_email_with_template(recipients, subject=None, message=None, from_email=
         # Nếu không có template, sử dụng nội dung email thông thường
         if not template:
             if not message:
-                frappe.throw("Template hoặc message cần được cung cấp.")
+                #frappe.throw("Template hoặc message cần được cung cấp.")
+                message = "This is default test"
             variables = [{"name": "body_content", "content": message}]
             template = "default_template"  # Thay bằng template mặc định của bạn
 
