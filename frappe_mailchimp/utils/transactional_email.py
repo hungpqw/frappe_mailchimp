@@ -31,6 +31,11 @@ def send_email_with_template(recipients, from_email: str, template: str, variabl
   :return: The response from the Mailchimp Transactional API
   """
   from_email="hungpqtcv@gmail.com"
+  template="default_template"
+  subject="Test"
+  recipients=[{"email":"hung.pham@wellspringsaigon.edu.vn"}]
+  variables=[{"name":"variable_name","content":"variable_value"}]
+  
   if isinstance(recipients, string_types):
     recipients = json.loads(recipients)
   if isinstance(variables, string_types):
@@ -46,8 +51,6 @@ def send_email_with_template(recipients, from_email: str, template: str, variabl
   else:
     # Raise exceptions
     return _send_message(recipients, subject, from_email, template, variables, bcc_address)
-
-
 
 def _send_message(recipients: list, subject: str, from_email: str, template: str, variables: list,
                   bcc_address: str = None) -> dict:
